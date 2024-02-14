@@ -2,16 +2,6 @@ import { createSearchParams, useNavigate } from 'react-router-dom'
 import path from 'src/constants/path'
 import { QueryConfig } from 'src/hooks/useQueryConfig'
 
-/**
- * index 0: Có 5 cái màu vàng tương ứng từ indexStar 0 - 4 đều màu vang
- * index 1: Có 4 cái màu vàng tương ứng từ indexStar 0 - 3 đều màu vang
- * index 2: Có 3 cái màu vàng tương ứng từ indexStar 0 - 2 đều màu vang
- * index 3: Có 2 cái màu vàng tương ứng từ indexStar 0 - 1 đều màu vang
- * index 4: Có 1 cái màu vàng tương ứng indexStar 0 đều màu vang
- *
- * Chúng ta nhận ra là indexStar < 5 - index => màu vàng
- */
-
 interface Props {
   queryConfig: QueryConfig
 }
@@ -92,7 +82,7 @@ export default function RatingStars({ queryConfig }: Props) {
                     </svg>
                   )
                 })}
-              {index !== 0 && <span>Trở lên</span>}
+              {index !== 0 && <span className='text-sm ml-1'>Trở lên</span>}
             </div>
           </li>
         ))}

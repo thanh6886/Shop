@@ -11,7 +11,7 @@ import { NoUndefinedField } from 'src/types/utils.type'
 import RatingStars from '../RatingStars'
 import omit from 'lodash/omit'
 import { QueryConfig } from 'src/hooks/useQueryConfig'
-import { useTranslation } from 'react-i18next'
+
 import { ObjectSchema } from 'yup'
 
 interface Props {
@@ -20,16 +20,10 @@ interface Props {
 }
 
 type FormData = NoUndefinedField<Pick<Schema, 'price_max' | 'price_min'>>
-/**
- * Rule validate
- * Nếu có price_min và price_max thì price_max >= price_min
- * Còn không thì có price_min thì không có price_max và ngược lại
- */
 
 const priceSchema = schema.pick(['price_min', 'price_max'])
 
 export default function AsideFilter({ queryConfig, categories }: Props) {
-  const { t } = useTranslation('home')
   const { category } = queryConfig
   const {
     control,
@@ -72,27 +66,28 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
           'text-orange': !category
         })}
       >
-        <svg viewBox='0 0 12 10' className='mr-3 h-4 w-3 fill-current'>
-          <g fillRule='evenodd' stroke='none' strokeWidth={1}>
-            <g transform='translate(-373 -208)'>
-              <g transform='translate(155 191)'>
-                <g transform='translate(218 17)'>
-                  <path d='m0 2h2v-2h-2zm4 0h7.1519633v-2h-7.1519633z' />
-                  <path d='m0 6h2v-2h-2zm4 0h7.1519633v-2h-7.1519633z' />
-                  <path d='m0 10h2v-2h-2zm4 0h7.1519633v-2h-7.1519633z' />
-                </g>
-              </g>
-            </g>
-          </g>
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          fill='none'
+          viewBox='0 0 24 24'
+          strokeWidth={1.5}
+          stroke='currentColor'
+          className='w-5 h-5 mr-3 fill-current'
+        >
+          <path
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            d='M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75'
+          />
         </svg>
-        {t('aside filter.all categories')}
+        Tất cả danh mục
       </Link>
       <div className='my-4 h-[1px] bg-gray-300' />
       <ul>
         {categories.map((categoryItem) => {
           const isActive = category === categoryItem._id
           return (
-            <li className='py-2 pl-2' key={categoryItem._id}>
+            <li className='py-2 pl-2 m-1 border-b border-x border-gray-500  ' key={categoryItem._id}>
               <Link
                 to={{
                   pathname: path.home,
@@ -116,7 +111,7 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
           )
         })}
       </ul>
-      <Link to={path.home} className='mt-4 flex items-center font-bold uppercase'>
+      <Link to={path.home} className='mt-4 flex items-center font-bold uppercase text-sm'>
         <svg
           enableBackground='new 0 0 15 15'
           viewBox='0 0 15 15'
@@ -134,11 +129,10 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
             />
           </g>
         </svg>
-        {t('aside filter.filter search')}
+        Bộ lọc tìm kiếm
       </Link>
       <div className='my-4 h-[1px] bg-gray-300' />
       <div className='my-5'>
-        <div>Khoảng giá</div>
         <form className='mt-2' onSubmit={onSubmit}>
           <div className='flex items-start'>
             <Controller
@@ -161,18 +155,6 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
                 )
               }}
             />
-            {/* <InputV2
-              control={control}
-              name='price_min'
-              type='number'
-              className='grow'
-              placeholder='₫ TỪ'
-              classNameInput='p-1 w-full outline-none border border-gray-300 focus:border-gray-500 rounded-sm focus:shadow-sm'
-              classNameError='hidden'
-              onChange={() => {
-                trigger('price_max')
-              }}
-            /> */}
 
             <div className='mx-2 mt-2 shrink-0'>-</div>
             <Controller
@@ -203,7 +185,7 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
         </form>
       </div>
       <div className='my-4 h-[1px] bg-gray-300' />
-      <div className='text-sm'>Đánh giá</div>
+      <div className='text-xl ml-3'>Đánh giá</div>
       <RatingStars queryConfig={queryConfig} />
       <div className='my-4 h-[1px] bg-gray-300' />
       <Button

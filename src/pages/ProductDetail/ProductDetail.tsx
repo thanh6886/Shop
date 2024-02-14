@@ -12,12 +12,11 @@ import { Product as ProductType, ProductListConfig } from 'src/types/product.typ
 import { formatCurrency, formatNumberToSocialStyle, getIdFromNameId, rateSale } from 'src/utils/utils'
 import Product from '../ProductList/components/Product'
 import path from 'src/constants/path'
-import { useTranslation } from 'react-i18next'
+
 import { Helmet } from 'react-helmet-async'
 import { convert } from 'html-to-text'
 
 export default function ProductDetail() {
-  const { t } = useTranslation(['product'])
   const queryClient = useQueryClient()
   const [buyCount, setBuyCount] = useState(1)
   const { nameId } = useParams()
@@ -228,9 +227,7 @@ export default function ProductDetail() {
                   value={buyCount}
                   max={product.quantity}
                 />
-                <div className='ml-6 text-sm text-gray-500'>
-                  {product.quantity} {t('product:available')}
-                </div>
+                <div className='ml-6 text-sm text-gray-500'>{product.quantity}</div>
               </div>
               <div className='mt-8 flex items-center'>
                 <button

@@ -2,10 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
-// Không có tính năng tree-shaking
-// import { omit } from 'lodash'
 
-// Import chỉ mỗi function omit
 import omit from 'lodash/omit'
 
 import { schema, Schema } from 'src/utils/rules'
@@ -54,18 +51,6 @@ export default function Register() {
               })
             })
           }
-          // if (formError?.email) {
-          //   setError('email', {
-          //     message: formError.email,
-          //     type: 'Server'
-          //   })
-          // }
-          // if (formError?.password) {
-          //   setError('password', {
-          //     message: formError.password,
-          //     type: 'Server'
-          //   })
-          // }
         }
       }
     })
@@ -121,7 +106,28 @@ export default function Register() {
                   Đăng ký
                 </Button>
               </div>
-              <div className='mt-8 flex items-center justify-center'>
+              <div className='text-center mt-4'>
+                Bằng việc đăng ký bạn đã đồng ý với Shope về
+                <br />
+                <a
+                  href='https://help.shopee.vn/portal/article/77243'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-red-600 m-2'
+                >
+                  Điều khoản dịch vụ
+                </a>
+                &
+                <a
+                  href='https://help.shopee.vn/portal/article/77244'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-red-600 m-2'
+                >
+                  Chính sách bảo mật
+                </a>
+              </div>
+              <div className='mt-5 flex items-center justify-center'>
                 <span className='text-gray-400'>Bạn đã có tài khoản?</span>
                 <Link className='ml-1 text-red-400' to='/login'>
                   Đăng nhập

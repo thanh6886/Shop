@@ -5,7 +5,6 @@ import userImage from 'src/assets/images/user.svg'
 import { ErrorResponse } from 'src/types/utils.type'
 
 export function isAxiosError<T>(error: unknown): error is AxiosError<T> {
-  // eslint-disable-next-line import/no-named-as-default-member
   return axios.isAxiosError(error)
 }
 
@@ -38,7 +37,9 @@ export function formatNumberToSocialStyle(value: number) {
     .toLowerCase()
 }
 
-export const rateSale = (original: number, sale: number) => Math.round(((original - sale) / original) * 100) + '%'
+export const rateSale = (original: number, sale: number) => {
+  return Math.round(((original - sale) / original) * 100) + '%'
+}
 
 const removeSpecialCharacter = (str: string) =>
   // eslint-disable-next-line no-useless-escape
