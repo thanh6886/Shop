@@ -50,14 +50,14 @@ export class Http {
     this.instance.interceptors.response.use(
       (response) => {
         const { url } = response.config
-        if (url === path.login || url === path.register) {
+        if (url === URL_LOGIN || url === URL_REGISTER) {
           const data = response.data as AuthResponse
           this.accessToken = data.data.access_token
           this.refreshToken = data.data.refresh_token
           setAccessTokenToLS(this.accessToken)
           setRefreshTokenToLS(this.refreshToken)
           setProfileToLS(data.data.user)
-        } else if (url === path.logout) {
+        } else if (url === URL_LOGOUT) {
           this.accessToken = ''
           this.refreshToken = ''
           clearLS()
