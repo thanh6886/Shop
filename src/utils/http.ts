@@ -10,11 +10,14 @@ import {
   setProfileToLS,
   setRefreshTokenToLS
 } from './auth'
-import config from 'src/constants/config'
-import { URL_LOGIN, URL_LOGOUT, URL_REFRESH_TOKEN, URL_REGISTER } from 'src/apis/auth.api'
+
 import { isAxiosExpiredTokenError, isAxiosUnauthorizedError } from './utils'
 import { ErrorResponse } from 'src/types/utils.type'
-import path from 'src/constants/path'
+
+const URL_LOGIN = 'login'
+const URL_REGISTER = 'register'
+const URL_LOGOUT = 'logout'
+const URL_REFRESH_TOKEN = 'refresh-access-token'
 
 export class Http {
   instance: AxiosInstance
@@ -26,7 +29,7 @@ export class Http {
     this.refreshToken = getRefreshTokenFromLS()
     this.refreshTokenRequest = null
     this.instance = axios.create({
-      baseURL: config.baseUrl,
+      baseURL: 'http://localhost:5000/',
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',

@@ -20,14 +20,15 @@ export default function Cart() {
     queryKey: ['purchases', { status: purchasesStatus.inCart }],
     queryFn: () => purchaseApi.getPurchases({ status: purchasesStatus.inCart })
   })
+  // console.log(purchasesInCartData)
   const updatePurchaseMutation = useMutation({
-    mutationFn: purchaseApi.updatePurchase,
+    mutationFn: (body: { product_id: string; buy_count: number }) => purchaseApi.updatePurchase(body),
     onSuccess: () => {
       refetch()
     }
   })
   const buyProductsMutation = useMutation({
-    mutationFn: purchaseApi.buyProducts,
+    mutationFn: (body: { product_id: string; buy_count: number }[]) => purchaseApi.buyProducts(body),
     onSuccess: (data) => {
       refetch()
       toast.success(data.data.message, {
@@ -37,7 +38,7 @@ export default function Cart() {
     }
   })
   const deletePurchasesMutation = useMutation({
-    mutationFn: purchaseApi.deletePurchase,
+    mutationFn: (purchaseIds: string[]) => purchaseApi.deletePurchase(purchaseIds),
     onSuccess: () => {
       refetch()
     }
@@ -48,6 +49,8 @@ export default function Cart() {
   const isAllChecked = useMemo(() => extendedPurchases.every((purchase) => purchase.checked), [extendedPurchases])
   const checkedPurchases = useMemo(() => extendedPurchases.filter((purchase) => purchase.checked), [extendedPurchases])
   const checkedPurchasesCount = checkedPurchases.length
+
+  //
   const totalCheckedPurchasePrice = useMemo(
     () =>
       checkedPurchases.reduce((result, current) => {
@@ -58,7 +61,7 @@ export default function Cart() {
   const totalCheckedPurchaseSavingPrice = useMemo(
     () =>
       checkedPurchases.reduce((result, current) => {
-        return result + (current.product.price_before_discount - current.product.price) * current.buy_count
+        return result + current.product.price_before_discount * current.buy_count
       }, 0),
     [checkedPurchases]
   )
@@ -85,43 +88,45 @@ export default function Cart() {
     }
   }, [])
 
-  const handleCheck = (purchaseIndex: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  //check
+  const handleCheck = (Index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setExtendedPurchases(
       produce((draft) => {
-        draft[purchaseIndex].checked = event.target.checked
+        draft[Index].checked = event.target.checked
       })
     )
   }
 
   const handleCheckAll = () => {
-    setExtendedPurchases((prev) =>
-      prev.map((purchase) => ({
+    setExtendedPurchases((prev) => {
+      // console.log(prev)
+      return prev.map((purchase) => ({
         ...purchase,
         checked: !isAllChecked
       }))
-    )
+    })
   }
-
-  const handleTypeQuantity = (purchaseIndex: number) => (value: number) => {
+  // input Quantity Control
+  const handleTypeQuantity = (Index: number) => (value: number) => {
     setExtendedPurchases(
       produce((draft) => {
-        draft[purchaseIndex].buy_count = value
+        draft[Index].buy_count = value
       })
     )
   }
 
-  const handleQuantity = (purchaseIndex: number, value: number, enable: boolean) => {
+  const handleQuantity = (Index: number, value: number, enable: boolean) => {
     if (enable) {
-      const purchase = extendedPurchases[purchaseIndex]
+      const purchase = extendedPurchases[Index]
       setExtendedPurchases(
         produce((draft) => {
-          draft[purchaseIndex].disabled = true
+          draft[Index].disabled = true
         })
       )
       updatePurchaseMutation.mutate({ product_id: purchase.product._id, buy_count: value })
     }
   }
-
+  //delete
   const handleDelete = (purchaseIndex: number) => () => {
     const purchaseId = extendedPurchases[purchaseIndex]._id
     deletePurchasesMutation.mutate([purchaseId])
@@ -288,11 +293,15 @@ export default function Cart() {
                 <div>
                   <div className='flex items-center sm:justify-end'>
                     <div>Tổng thanh toán ({checkedPurchasesCount} sản phẩm):</div>
-                    <div className='ml-2 text-2xl text-orange'>₫{formatCurrency(totalCheckedPurchasePrice)}</div>
+                    <div className='ml-2 text-2xl text-orange'>
+                      ₫{new Intl.NumberFormat().format(totalCheckedPurchasePrice)}
+                    </div>
                   </div>
                   <div className='flex items-center text-sm sm:justify-end'>
                     <div className='text-gray-500'>Tiết kiệm</div>
-                    <div className='ml-6 text-orange'>₫{formatCurrency(totalCheckedPurchaseSavingPrice)}</div>
+                    <div className='ml-6 text-orange'>
+                      ₫{new Intl.NumberFormat().format(totalCheckedPurchaseSavingPrice - totalCheckedPurchasePrice)}
+                    </div>
                   </div>
                 </div>
                 <Button

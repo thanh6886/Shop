@@ -26,7 +26,8 @@ export default function SortProductList({ queryConfig, pageSize }: Props) {
         omit(
           {
             ...queryConfig,
-            sort_by: sortByValue
+            sort_by: sortByValue,
+            page: '1'
           },
           ['order']
         )
@@ -40,7 +41,8 @@ export default function SortProductList({ queryConfig, pageSize }: Props) {
       search: createSearchParams({
         ...queryConfig,
         sort_by: sortBy.price,
-        order: orderValue
+        order: orderValue,
+        page: '1'
       }).toString()
     })
   }

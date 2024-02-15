@@ -96,7 +96,8 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
                   pathname: path.home,
                   search: createSearchParams({
                     ...queryConfig,
-                    category: categoryItem._id
+                    category: categoryItem._id,
+                    page: '1'
                   }).toString()
                 }}
                 className={classNames('relative px-2', {

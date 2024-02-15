@@ -11,19 +11,19 @@ import { formatCurrency } from 'src/utils/utils'
 import NavHeader from '../NavHeader'
 import useSearchProducts from 'src/hooks/useSearchProducts'
 
-const MAX_PURCHASES = 5
 export default function Header() {
   const { isAuthenticated } = useContext(AppContext)
   const { onSubmitSearch, register } = useSearchProducts()
 
   const { data: purchasesInCartData } = useQuery({
+    // purchasesInCartData  gán truy vấn
     queryKey: ['purchases', { status: purchasesStatus.inCart }],
     queryFn: () => purchaseApi.getPurchases({ status: purchasesStatus.inCart }),
     enabled: isAuthenticated
   })
 
   const purchasesInCart = purchasesInCartData?.data.data
-
+  // console.log(purchasesInCart)
   return (
     <div className='bg-[linear-gradient(-180deg,#f53d2d,#f63)] pb-5 pt-2 text-white'>
       <div className='container'>
@@ -36,6 +36,7 @@ export default function Header() {
               </g>
             </svg>
           </Link>
+          {/* thanh tìm kiếm  */}
           <form className='col-span-9' onSubmit={onSubmitSearch}>
             <div className='flex rounded-sm bg-white p-1'>
               <input
@@ -62,6 +63,7 @@ export default function Header() {
               </button>
             </div>
           </form>
+          {/* dỏ hàng */}
           <div className='col-span-1 justify-self-end'>
             <Popover
               renderPopover={
@@ -70,7 +72,7 @@ export default function Header() {
                     <div className='p-2'>
                       <div className='capitalize text-gray-400'>Sản phẩm mới thêm</div>
                       <div className='mt-5'>
-                        {purchasesInCart.slice(0, MAX_PURCHASES).map((purchase) => (
+                        {purchasesInCart.slice(0, 5).map((purchase) => (
                           <div className='mt-2 flex py-2 hover:bg-gray-100' key={purchase._id}>
                             <div className='flex-shrink-0'>
                               <img
@@ -90,8 +92,7 @@ export default function Header() {
                       </div>
                       <div className='mt-6 flex items-center justify-between'>
                         <div className='text-xs capitalize text-gray-500'>
-                          {purchasesInCart.length > MAX_PURCHASES ? purchasesInCart.length - MAX_PURCHASES : ''} Thêm
-                          hàng vào giỏ
+                          {purchasesInCart.length > 5 ? purchasesInCart.length - 5 : ''} Thêm hàng vào giỏ
                         </div>
                         <Link
                           to={path.cart}

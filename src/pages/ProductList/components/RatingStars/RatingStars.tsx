@@ -14,7 +14,8 @@ export default function RatingStars({ queryConfig }: Props) {
       pathname: path.home,
       search: createSearchParams({
         ...queryConfig,
-        rating_filter: String(ratingFilter)
+        rating_filter: String(ratingFilter),
+        page: '1'
       }).toString()
     })
   }
