@@ -142,38 +142,6 @@ export default function useRouteElements() {
         }
       ]
     }
-    // },
-    // {
-    //   path: path.productDetail,
-    //   element: (
-    //     <MainLayout>
-    //       <Suspense>
-    //         <ProductDetail />
-    //       </Suspense>
-    //     </MainLayout>
-    //   )
-    // },
-    // {
-    //   path: '',
-    //   index: true,
-    //   element: (
-    //     <MainLayout>
-    //       <Suspense>
-    //         <ProductList />
-    //       </Suspense>
-    //     </MainLayout>
-    //   )
-    // },
-    // {
-    //   path: '*',
-    //   element: (
-    //     <MainLayout>
-    //       <Suspense>
-    //         <NotFound />
-    //       </Suspense>
-    //     </MainLayout>
-    //   )
-    // }
   ])
   return routeElements
 }

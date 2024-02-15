@@ -87,7 +87,10 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
         {categories.map((categoryItem) => {
           const isActive = category === categoryItem._id
           return (
-            <li className='py-2 pl-2 m-1 border-b border-x border-gray-500  ' key={categoryItem._id}>
+            <li
+              className='py-2 pl-2 m-1 border-b border-x border-gray-500  transition-transform transform hover:scale-105 '
+              key={categoryItem._id}
+            >
               <Link
                 to={{
                   pathname: path.home,
@@ -101,7 +104,7 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
                 })}
               >
                 {isActive && (
-                  <svg viewBox='0 0 4 7' className='absolute top-1 left-[-10px] h-2 w-2 fill-orange'>
+                  <svg viewBox='0 0 4 7' className='absolute top-1 left-[-10px] h-3 w-3 fill-orange'>
                     <polygon points='4 3.5 0 0 0 7' />
                   </svg>
                 )}
