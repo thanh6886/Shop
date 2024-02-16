@@ -6,12 +6,11 @@ import { schema, Schema } from 'src/utils/rules'
 import { createSearchParams, useNavigate } from 'react-router-dom'
 import path from 'src/constants/path'
 
-type FormData = Pick<Schema, 'name'>
-
-const nameSchema = schema.pick(['name'])
-
 export default function useSearchProducts() {
+  type FormData = Pick<Schema, 'name'>
+  const nameSchema = schema.pick(['name'])
   const queryConfig = useQueryConfig()
+  const navigate = useNavigate()
 
   const { register, handleSubmit } = useForm<FormData>({
     defaultValues: {
@@ -19,9 +18,9 @@ export default function useSearchProducts() {
     },
     resolver: yupResolver(nameSchema)
   })
-  const navigate = useNavigate()
 
-  const onSubmitSearch = handleSubmit((data) => {
+  const handleSearch = handleSubmit((data) => {
+    // console.log(data)
     const config = queryConfig.order
       ? omit(
           {
@@ -39,5 +38,5 @@ export default function useSearchProducts() {
       search: createSearchParams(config).toString()
     })
   })
-  return { onSubmitSearch, register }
+  return { handleSearch, register }
 }

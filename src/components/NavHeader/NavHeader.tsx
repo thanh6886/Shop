@@ -18,7 +18,7 @@ export default function NavHeader() {
       setIsAuthenticated(false)
       setProfile(null)
       queryClient.removeQueries({ queryKey: ['purchases', { status: purchasesStatus.inCart }] })
-      toast.success('đăng xuất thành công', { autoClose: 1300 })
+      toast.success('đăng xuất thành công', { autoClose: 1000 })
     }
   })
 
@@ -28,23 +28,23 @@ export default function NavHeader() {
 
   return (
     <div className='flex justify-between'>
-      <div className='flex py-1 cursor-pointer items-center '>
-        <div className='text-sm text-white'>Kênh Người Bán</div>
-        <div className='h-3 w-[1px] bg-white m-1' />
-        <div className='text-sm text-white'>Trở thành người bán Shopee</div>
-        <div className='h-3 w-[1px] bg-white m-1' />
+      <div className='flex  cursor-pointer items-center ml-9'>
+        <div className='text-left text-white'>Kênh Người Bán</div>
+        <div className='h-4 w-[1px] bg-white m-1' />
+        <div className='text-left text-white'>Trở thành người bán Shopee</div>
+        <div className='h-4 w-[1px] bg-white m-1' />
         <Popover
           renderPopover={
             <div>
               <img
                 src='https://down-vn.img.susercontent.com/file/a5e589e8e118e937dc660f224b9a1472'
                 alt='download_qr_code'
-                className='w-[60px] h-[60px] shadow-md'
+                className='w-28 h-28 shadow-md'
               />
             </div>
           }
         >
-          <div className='text-sm text-white'>Tải ứng dụng</div>
+          <div className='text-left text-white'>Tải ứng dụng</div>
         </Popover>
       </div>
       <div className='flex justify-end'>

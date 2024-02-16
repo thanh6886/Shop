@@ -115,3 +115,6 @@ export type Schema = yup.InferType<typeof schema>
 
 export const loginSchema = schema.pick(['email', 'password'])
 export const registerSchema = schema.pick(['email', 'password', 'confirm_password'])
+export const priceSchema = schema.pick(['price_min', 'price_max'])
+export const passwordSchema = userSchema.pick(['password', 'new_password', 'confirm_password'])
+export const profileSchema = userSchema.pick(['name', 'address', 'phone', 'date_of_birth', 'avatar'])

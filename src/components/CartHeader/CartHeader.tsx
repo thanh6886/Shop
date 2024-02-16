@@ -4,7 +4,7 @@ import useSearchProducts from 'src/hooks/useSearchProducts'
 import NavHeader from '../NavHeader'
 
 export default function CartHeader() {
-  const { onSubmitSearch, register } = useSearchProducts()
+  const { handleSearch, register } = useSearchProducts()
 
   return (
     <div className='border-b border-b-black/10'>

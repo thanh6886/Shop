@@ -6,7 +6,8 @@ import RegisterHeader from 'src/components/RegisterHeader'
 interface Props {
   children?: React.ReactNode
 }
-function RegisterLayoutInner({ children }: Props) {
+
+export default function RegisterLayout({ children }: Props) {
   return (
     <div>
       <RegisterHeader />
@@ -16,7 +17,3 @@ function RegisterLayoutInner({ children }: Props) {
     </div>
   )
 }
-
-const RegisterLayout = memo(RegisterLayoutInner)
-
-export default RegisterLayout

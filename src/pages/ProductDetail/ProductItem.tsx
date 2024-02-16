@@ -9,7 +9,7 @@ import ProductRating from 'src/components/ProductRating'
 import QuantityController from 'src/components/QuantityController'
 import { purchasesStatus } from 'src/constants/purchase'
 import { Product as ProductType, ProductListConfig } from 'src/types/product.type'
-import { formatCurrency, formatNumberToSocialStyle, getIdFromNameId, rateSale } from 'src/utils/utils'
+import { getIdFromNameId, rateSale } from 'src/utils/utils'
 import Product from '../ProductList/components/Product'
 import path from 'src/constants/path'
 
@@ -137,7 +137,7 @@ export default function ProductItem() {
   return (
     <div className='bg-gray-200 py-6'>
       <Helmet>
-        <title>{product.name} | Shope</title>
+        <title>{product.name} | Shop</title>
         <meta
           name='description'
           content={convert(product.description, {
@@ -222,15 +222,27 @@ export default function ProductItem() {
                 </div>
                 <div className='mx-4 h-4 w-[1px] bg-gray-300'></div>
                 <div>
-                  <span>{formatNumberToSocialStyle(product.sold)}</span>
+                  <span className=''>
+                    {new Intl.NumberFormat('en', {
+                      notation: 'compact',
+                      maximumFractionDigits: 2
+                    })
+                      .format(product.sold)
+                      .replace('.', ',')
+                      .toLowerCase()}{' '}
+                  </span>
                   <span className='ml-1 text-gray-500'>Đã bán</span>
                 </div>
               </div>
               <div className='mt-8 flex items-center bg-gray-50 px-5 py-4'>
-                <div className='text-gray-500 line-through'>₫{formatCurrency(product.price_before_discount)}</div>
-                <div className='ml-3 text-3xl font-medium text-orange'>₫{formatCurrency(product.price)}</div>
+                <div className='text-gray-500 line-through'>
+                  ₫{new Intl.NumberFormat().format(product.price_before_discount)}
+                </div>
+                <div className='ml-3 text-3xl font-medium text-orange'>
+                  ₫{new Intl.NumberFormat().format(product.price)}
+                </div>
                 <div className='ml-4 rounded-sm bg-orange px-1 py-[2px] text-xs font-semibold uppercase text-white'>
-                  {rateSale(product.price_before_discount, product.price)} giảm
+                  {rateSale(product.price_before_discount, product.price)}giảm
                 </div>
               </div>
               <div className='mt-8 flex items-center'>

@@ -5,7 +5,7 @@ import Header from 'src/components/Header'
 interface Props {
   children?: React.ReactNode
 }
-function MainLayoutInner({ children }: Props) {
+export default function MainLayout({ children }: Props) {
   return (
     <div>
       <Header />
@@ -15,5 +15,3 @@ function MainLayoutInner({ children }: Props) {
     </div>
   )
 }
-const MainLayout = memo(MainLayoutInner)
-export default MainLayout

@@ -3,16 +3,15 @@ import { useMutation } from '@tanstack/react-query'
 import omit from 'lodash/omit'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import userApi from 'src/apis/user.api'
+import userApi, { BodyUpdateProfile } from 'src/apis/user.api'
 import Button from 'src/components/Button'
 import Input from 'src/components/Input'
 import { ErrorResponse, NoUndefinedField } from 'src/types/utils.type'
-import { userSchema, UserSchema } from 'src/utils/rules'
+import { passwordSchema, userSchema, UserSchema } from 'src/utils/rules'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import { ObjectSchema } from 'yup'
 
 type FormData = NoUndefinedField<Pick<UserSchema, 'password' | 'new_password' | 'confirm_password'>>
-const passwordSchema = userSchema.pick(['password', 'new_password', 'confirm_password'])
 
 export default function ChangePassword() {
   const {
@@ -29,23 +28,29 @@ export default function ChangePassword() {
     },
     resolver: yupResolver<FormData>(passwordSchema as ObjectSchema<FormData>)
   })
-  const updateProfileMutation = useMutation(userApi.updateProfile)
+  const updateProfileMutation = useMutation({
+    mutationFn: (body: BodyUpdateProfile) => userApi.updateProfile(body)
+  })
 
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = handleSubmit((data) => {
     try {
-      const res = await updateProfileMutation.mutateAsync(omit(data, ['confirm_password']))
-      toast.success(res.data.message)
-      reset()
+      const body = omit(data, ['confirm_password'])
+      updateProfileMutation.mutate(body, {
+        onSuccess: (mes) => {
+          toast.success(mes.data.message, { autoClose: 800 })
+          reset()
+        }
+      })
     } catch (error) {
       if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
         const formError = error.response?.data.data
         if (formError) {
-          Object.keys(formError).forEach((key) => {
+          for (const key in formError) {
             setError(key as keyof FormData, {
               message: formError[key as keyof FormData],
-              type: 'Server'
+              type: 'Sever'
             })
-          })
+          }
         }
       }
     }

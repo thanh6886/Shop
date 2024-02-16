@@ -18,11 +18,11 @@ export const clearLS = () => {
   LocalStorageEventTarget.dispatchEvent(clearLSEvent)
 }
 
-export const getAccessTokenFromLS = () => localStorage.getItem('access_token') || ''
+export const getAccesTokentoLS = () => localStorage.getItem('access_token') || ''
 
 export const getRefreshTokenFromLS = () => localStorage.getItem('refresh_token') || ''
 
-export const getProfileFromLS = () => {
+export const getProfileLS = () => {
   const result = localStorage.getItem('profile')
   return result ? JSON.parse(result) : null
 }

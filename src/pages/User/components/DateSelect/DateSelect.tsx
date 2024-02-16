@@ -24,12 +24,10 @@ export default function DateSelect({ value, onChange, errorMessage }: Props) {
   }, [value])
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const { value: valueFromSelect, name } = event.target
+    const { value, name } = event.target
     const newDate = {
-      date: value?.getDate() || date.date,
-      month: value?.getMonth() || date.month,
-      year: value?.getFullYear() || date.year,
-      [name]: Number(valueFromSelect)
+      ...date,
+      [name]: value
     }
     setDate(newDate)
     onChange && onChange(new Date(newDate.year, newDate.month, newDate.date))
@@ -73,7 +71,7 @@ export default function DateSelect({ value, onChange, errorMessage }: Props) {
             value={value?.getFullYear() || date.year}
           >
             <option disabled>Năm</option>
-            {range(1990, 2024).map((item) => (
+            {range(1990, 2025).map((item) => (
               <option value={item} key={item}>
                 {item}
               </option>

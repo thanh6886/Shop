@@ -4,7 +4,7 @@ import { toast } from 'react-toastify'
 import { AuthResponse, RefreshTokenReponse } from 'src/types/auth.type'
 import {
   clearLS,
-  getAccessTokenFromLS,
+  getAccesTokentoLS,
   getRefreshTokenFromLS,
   setAccessTokenToLS,
   setProfileToLS,
@@ -25,7 +25,7 @@ export class Http {
   private refreshToken: string
   private refreshTokenRequest: Promise<string> | null
   constructor() {
-    this.accessToken = getAccessTokenFromLS()
+    this.accessToken = getAccesTokentoLS()
     this.refreshToken = getRefreshTokenFromLS()
     this.refreshTokenRequest = null
     this.instance = axios.create({
@@ -68,7 +68,7 @@ export class Http {
         return response
       },
       (error: AxiosError) => {
-        // lỗi không phải 422 và 401
+        // tất cả lỗi
         if (
           ![HttpStatusCode.UnprocessableEntity, HttpStatusCode.Unauthorized].includes(error.response?.status as number)
         ) {
@@ -76,7 +76,7 @@ export class Http {
           const message = data?.message || error.message
           toast.error(message)
         }
-        // Nếu là lỗi 401
+        //  lỗi 401
         if (isAxiosUnauthorizedError<ErrorResponse<{ name: string; message: string }>>(error)) {
           const config = error.response?.config || { headers: {}, url: '' }
           const { url } = config

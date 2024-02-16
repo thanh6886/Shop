@@ -5,7 +5,7 @@ import InputNumber from 'src/components/InputNumber'
 import path from 'src/constants/path'
 import { Category } from 'src/types/category.type'
 import { useForm, Controller } from 'react-hook-form'
-import { Schema, schema } from 'src/utils/rules'
+import { priceSchema, Schema, schema } from 'src/utils/rules'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { NoUndefinedField } from 'src/types/utils.type'
 import RatingStars from '../RatingStars'
@@ -18,13 +18,11 @@ interface Props {
   queryConfig: QueryConfig
   categories: Category[]
 }
-
 type FormData = NoUndefinedField<Pick<Schema, 'price_max' | 'price_min'>>
-
-const priceSchema = schema.pick(['price_min', 'price_max'])
 
 export default function AsideFilter({ queryConfig, categories }: Props) {
   const { category } = queryConfig
+  const navigate = useNavigate()
   const {
     control,
     handleSubmit,
@@ -38,8 +36,9 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
     },
     resolver: yupResolver<FormData>(priceSchema as ObjectSchema<FormData>)
   })
-  const navigate = useNavigate()
+
   const onSubmit = handleSubmit((data) => {
+    // console.log(data)
     navigate({
       pathname: path.home,
       search: createSearchParams({
@@ -51,11 +50,11 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
   })
 
   const handleRemoveAll = () => {
-    reset()
     navigate({
       pathname: path.home,
       search: createSearchParams(omit(queryConfig, ['price_min', 'price_max', 'rating_filter', 'category'])).toString()
     })
+    reset()
   }
 
   return (
@@ -84,19 +83,19 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
       </Link>
       <div className='my-4 h-[1px] bg-gray-300' />
       <ul>
-        {categories.map((categoryItem) => {
-          const isActive = category === categoryItem._id
+        {categories.map((item) => {
+          const isActive = category === item._id
           return (
             <li
               className='py-2 pl-2 m-1 border-b border-x border-gray-500  transition-transform transform hover:scale-105 '
-              key={categoryItem._id}
+              key={item._id}
             >
               <Link
                 to={{
                   pathname: path.home,
                   search: createSearchParams({
                     ...queryConfig,
-                    category: categoryItem._id,
+                    category: item._id,
                     page: '1'
                   }).toString()
                 }}
@@ -109,7 +108,7 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
                     <polygon points='4 3.5 0 0 0 7' />
                   </svg>
                 )}
-                {categoryItem.name}
+                {item.name}
               </Link>
             </li>
           )

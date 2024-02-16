@@ -7,13 +7,13 @@ import Popover from '../Popover'
 import { purchasesStatus } from 'src/constants/purchase'
 import purchaseApi from 'src/apis/purchase.api'
 import noproduct from 'src/assets/images/no-product.png'
-import { formatCurrency } from 'src/utils/utils'
+
 import NavHeader from '../NavHeader'
 import useSearchProducts from 'src/hooks/useSearchProducts'
 
 export default function Header() {
   const { isAuthenticated } = useContext(AppContext)
-  const { onSubmitSearch, register } = useSearchProducts()
+  const { handleSearch, register } = useSearchProducts()
 
   const { data: purchasesInCartData } = useQuery({
     // purchasesInCartData  gán truy vấn
@@ -37,7 +37,7 @@ export default function Header() {
             </svg>
           </Link>
           {/* thanh tìm kiếm  */}
-          <form className='col-span-9' onSubmit={onSubmitSearch}>
+          <form className='col-span-9' onSubmit={handleSearch}>
             <div className='flex rounded-sm bg-white p-1'>
               <input
                 type='text'
@@ -85,7 +85,9 @@ export default function Header() {
                               <div className='truncate'>{purchase.product.name}</div>
                             </div>
                             <div className='ml-2 flex-shrink-0'>
-                              <span className='text-orange'>₫{formatCurrency(purchase.product.price)}</span>
+                              <span className='text-orange'>
+                                ₫{new Intl.NumberFormat().format(purchase.product.price)}
+                              </span>
                             </div>
                           </div>
                         ))}

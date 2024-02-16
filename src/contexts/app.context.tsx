@@ -1,7 +1,11 @@
 import { createContext, useState } from 'react'
 import { ExtendedPurchase } from 'src/types/purchase.type'
 import { User } from 'src/types/user.type'
-import { getAccessTokenFromLS, getProfileFromLS } from 'src/utils/auth'
+import { getAccesTokentoLS, getProfileLS } from 'src/utils/auth'
+
+interface Props {
+  children: React.ReactNode
+}
 
 interface AppContextInterface {
   isAuthenticated: boolean
@@ -13,35 +17,25 @@ interface AppContextInterface {
   reset: () => void
 }
 
-export const getInitialAppContext: () => AppContextInterface = () => ({
-  isAuthenticated: Boolean(getAccessTokenFromLS()),
+const initialAppContext: AppContextInterface = {
+  isAuthenticated: Boolean(getAccesTokentoLS()),
   setIsAuthenticated: () => null,
-  profile: getProfileFromLS(),
+  profile: getProfileLS(),
   setProfile: () => null,
   extendedPurchases: [],
   setExtendedPurchases: () => null,
   reset: () => null
-})
-
-const initialAppContext = getInitialAppContext()
+}
 
 export const AppContext = createContext<AppContextInterface>(initialAppContext)
 
-export const AppProvider = ({
-  children,
-  defaultValue = initialAppContext
-}: {
-  children: React.ReactNode
-  defaultValue?: AppContextInterface
-}) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(defaultValue.isAuthenticated)
-  const [extendedPurchases, setExtendedPurchases] = useState<ExtendedPurchase[]>(defaultValue.extendedPurchases)
-  const [profile, setProfile] = useState<User | null>(defaultValue.profile)
+export const AppProvider = ({ children }: Props) => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(initialAppContext.isAuthenticated)
+  const [extendedPurchases, setExtendedPurchases] = useState<ExtendedPurchase[]>(initialAppContext.extendedPurchases)
+  const [profile, setProfile] = useState<User | null>(initialAppContext.profile)
 
   const reset = () => {
-    setIsAuthenticated(false)
-    setExtendedPurchases([])
-    setProfile(null)
+    setIsAuthenticated(false), setExtendedPurchases([]), setProfile(null)
   }
 
   return (

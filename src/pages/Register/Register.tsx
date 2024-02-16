@@ -59,8 +59,8 @@ export default function Register() {
   return (
     <div className='bg-orange'>
       <Helmet>
-        <title>Đăng ký | Shopee</title>
-        <meta name='description' content='Đăng ký tài khoản' />
+        <title>Đăng ký | Shop</title>
+        <meta name='description' content='Đăng ký' />
       </Helmet>
       <div className='container'>
         <div className='grid grid-cols-1 py-12 lg:grid-cols-5 lg:py-32 lg:pr-10'>

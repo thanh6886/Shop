@@ -7,7 +7,7 @@ import QuantityController from 'src/components/QuantityController'
 import path from 'src/constants/path'
 import { purchasesStatus } from 'src/constants/purchase'
 import { Purchase } from 'src/types/purchase.type'
-import { formatCurrency, generateNameId } from 'src/utils/utils'
+import { generateNameId } from 'src/utils/utils'
 import { produce } from 'immer'
 import keyBy from 'lodash/keyBy'
 import { toast } from 'react-toastify'
@@ -50,7 +50,7 @@ export default function Cart() {
   const checkedPurchases = useMemo(() => extendedPurchases.filter((purchase) => purchase.checked), [extendedPurchases])
   const checkedPurchasesCount = checkedPurchases.length
 
-  //
+  // tính tổng giá tiền
   const totalCheckedPurchasePrice = useMemo(
     () =>
       checkedPurchases.reduce((result, current) => {
@@ -179,9 +179,9 @@ export default function Cart() {
                 </div>
                 {extendedPurchases.length > 0 && (
                   <div className='my-3 rounded-sm bg-white p-5 shadow'>
-                    {extendedPurchases.map((purchase, index) => (
+                    {extendedPurchases.map((e, index) => (
                       <div
-                        key={purchase._id}
+                        key={e._id}
                         className='mb-5 grid grid-cols-12 items-center rounded-sm border border-gray-200 bg-white py-5 px-4 text-center text-sm text-gray-500 first:mt-0'
                       >
                         <div className='col-span-6'>
@@ -190,7 +190,7 @@ export default function Cart() {
                               <input
                                 type='checkbox'
                                 className='h-5 w-5 accent-orange'
-                                checked={purchase.checked}
+                                checked={e.checked}
                                 onChange={handleCheck(index)}
                               />
                             </div>
@@ -199,21 +199,21 @@ export default function Cart() {
                                 <Link
                                   className='h-20 w-20 flex-shrink-0'
                                   to={`${path.home}${generateNameId({
-                                    name: purchase.product.name,
-                                    id: purchase.product._id
+                                    name: e.product.name,
+                                    id: e.product._id
                                   })}`}
                                 >
-                                  <img alt={purchase.product.name} src={purchase.product.image} />
+                                  <img alt={e.product.name} src={e.product.image} />
                                 </Link>
                                 <div className='flex-grow px-2 pt-1 pb-2'>
                                   <Link
                                     to={`${path.home}${generateNameId({
-                                      name: purchase.product.name,
-                                      id: purchase.product._id
+                                      name: e.product.name,
+                                      id: e.product._id
                                     })}`}
                                     className='text-left line-clamp-2'
                                   >
-                                    {purchase.product.name}
+                                    {e.product.name}
                                   </Link>
                                 </div>
                               </div>
@@ -225,17 +225,17 @@ export default function Cart() {
                             <div className='col-span-2'>
                               <div className='flex items-center justify-center'>
                                 <span className='text-gray-300 line-through'>
-                                  ₫{formatCurrency(purchase.product.price_before_discount)}
+                                  ₫{new Intl.NumberFormat().format(e.product.price_before_discount)}
                                 </span>
-                                <span className='ml-3'>₫{formatCurrency(purchase.product.price)}</span>
+                                <span className='ml-3'>₫{new Intl.NumberFormat().format(e.product.price)}</span>
                               </div>
                             </div>
                             <div className='col-span-1'>
                               <QuantityController
-                                max={purchase.product.quantity}
-                                value={purchase.buy_count}
+                                max={e.product.quantity}
+                                value={e.buy_count}
                                 classNameWrapper='flex items-center'
-                                onIncrease={(value) => handleQuantity(index, value, value <= purchase.product.quantity)}
+                                onIncrease={(value) => handleQuantity(index, value, value <= e.product.quantity)}
                                 onDecrease={(value) => handleQuantity(index, value, value >= 1)}
                                 onType={handleTypeQuantity(index)}
                                 onFocusOut={(value) =>
@@ -243,16 +243,16 @@ export default function Cart() {
                                     index,
                                     value,
                                     value >= 1 &&
-                                      value <= purchase.product.quantity &&
+                                      value <= e.product.quantity &&
                                       value !== (purchasesInCart as Purchase[])[index].buy_count
                                   )
                                 }
-                                disabled={purchase.disabled}
+                                disabled={e.disabled}
                               />
                             </div>
                             <div className='col-span-1'>
                               <span className='text-orange'>
-                                ₫{formatCurrency(purchase.product.price * purchase.buy_count)}
+                                ₫{new Intl.NumberFormat().format(e.product.price * e.buy_count)}
                               </span>
                             </div>
                             <div className='col-span-1'>
