@@ -1,3 +1,3 @@
-import ProductDetail from './ProductDetail'
+import ProductItem from './ProductItem'
 
-export default ProductDetail
+export default ProductItem

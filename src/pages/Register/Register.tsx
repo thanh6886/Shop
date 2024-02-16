@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query'
 
 import omit from 'lodash/omit'
 
-import { schema, Schema } from 'src/utils/rules'
+import { registerSchema, schema, Schema } from 'src/utils/rules'
 import Input from 'src/components/Input'
 import authApi from 'src/apis/auth.api'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
@@ -14,9 +14,9 @@ import { useContext } from 'react'
 import { AppContext } from 'src/contexts/app.context'
 import Button from 'src/components/Button'
 import { Helmet } from 'react-helmet-async'
+import { toast } from 'react-toastify'
 
 type FormData = Pick<Schema, 'email' | 'password' | 'confirm_password'>
-const registerSchema = schema.pick(['email', 'password', 'confirm_password'])
 
 export default function Register() {
   const { setIsAuthenticated, setProfile } = useContext(AppContext)
@@ -27,7 +27,7 @@ export default function Register() {
     setError,
     formState: { errors }
   } = useForm<FormData>({
-    resolver: yupResolver(registerSchema)
+    resolver: yupResolver<FormData>(registerSchema)
   })
   const registerAccountMutation = useMutation({
     mutationFn: (body: Omit<FormData, 'confirm_password'>) => authApi.registerAccount(body)
@@ -36,21 +36,21 @@ export default function Register() {
     const body = omit(data, ['confirm_password'])
     registerAccountMutation.mutate(body, {
       onSuccess: (data) => {
+        // console.log(data.data)
         setIsAuthenticated(true)
         setProfile(data.data.data.user)
         navigate('/')
       },
       onError: (error) => {
         if (isAxiosUnprocessableEntityError<ErrorResponse<Omit<FormData, 'confirm_password'>>>(error)) {
-          const formError = error.response?.data.data
-          if (formError) {
-            Object.keys(formError).forEach((key) => {
-              setError(key as keyof Omit<FormData, 'confirm_password'>, {
-                message: formError[key as keyof Omit<FormData, 'confirm_password'>],
-                type: 'Server'
-              })
+          const loginError = error.response?.data.data
+          for (let key in loginError) {
+            setError(key as keyof Omit<FormData, 'confirm_password'>, {
+              message: loginError[key as keyof Omit<FormData, 'confirm_password'>],
+              type: 'Sever'
             })
           }
+          toast.error(`${loginError?.password}`, { autoClose: 7000, position: 'top-center' })
         }
       }
     })
@@ -59,8 +59,8 @@ export default function Register() {
   return (
     <div className='bg-orange'>
       <Helmet>
-        <title>Đăng ký | Shopee Clone</title>
-        <meta name='description' content='Đăng ký tài khoản vào dự án Shopee Clone' />
+        <title>Đăng ký | Shopee</title>
+        <meta name='description' content='Đăng ký tài khoản' />
       </Helmet>
       <div className='container'>
         <div className='grid grid-cols-1 py-12 lg:grid-cols-5 lg:py-32 lg:pr-10'>

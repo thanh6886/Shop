@@ -16,15 +16,18 @@ import path from 'src/constants/path'
 import { Helmet } from 'react-helmet-async'
 import { convert } from 'html-to-text'
 
-export default function ProductDetail() {
+export default function ProductItem() {
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const [buyCount, setBuyCount] = useState(1)
+  const [buyCount, setBuyCount] = useState(1) //
   const { nameId } = useParams()
   const id = getIdFromNameId(nameId as string)
-  const { data: productDetailData } = useQuery({
+  const { data: productDetailData, refetch } = useQuery({
     queryKey: ['product', id],
     queryFn: () => productApi.getProductDetail(id as string)
   })
+  // console.log(productDetailData)
+
   const [currentIndexImages, setCurrentIndexImages] = useState([0, 5])
   const [activeImage, setActiveImage] = useState('')
   const product = productDetailData?.data.data
@@ -33,7 +36,9 @@ export default function ProductDetail() {
     () => (product ? product.images.slice(...currentIndexImages) : []),
     [product, currentIndexImages]
   )
-  const queryConfig: ProductListConfig = { limit: '20', page: '1', category: product?.category._id }
+  //
+
+  const queryConfig: ProductListConfig = { limit: '15', page: '1', category: product?.category._id }
 
   const { data: productsData } = useQuery({
     queryKey: ['products', queryConfig],
@@ -43,8 +48,6 @@ export default function ProductDetail() {
     staleTime: 3 * 60 * 1000,
     enabled: Boolean(product)
   })
-  const addToCartMutation = useMutation(purchaseApi.addToCart)
-  const navigate = useNavigate()
 
   useEffect(() => {
     if (product && product.images.length > 0) {
@@ -54,31 +57,26 @@ export default function ProductDetail() {
 
   const next = () => {
     if (currentIndexImages[1] < (product as ProductType).images.length) {
-      setCurrentIndexImages((prev) => [prev[0] + 1, prev[1] + 1])
+      setCurrentIndexImages((e) => [e[0] + 1, e[1] + 1])
     }
   }
 
   const prev = () => {
     if (currentIndexImages[0] > 0) {
-      setCurrentIndexImages((prev) => [prev[0] - 1, prev[1] - 1])
+      setCurrentIndexImages((e) => [e[0] - 1, e[1] - 1])
     }
   }
 
-  const chooseActive = (img: string) => {
-    setActiveImage(img)
+  const chooseActive = (e: string) => {
+    setActiveImage(e)
   }
 
   const handleZoom = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const rect = event.currentTarget.getBoundingClientRect()
     const image = imageRef.current as HTMLImageElement
     const { naturalHeight, naturalWidth } = image
-    // Cách 1: Lấy offsetX, offsetY đơn giản khi chúng ta đã xử lý được bubble event
-    // const { offsetX, offsetY } = event.nativeEvent
-
-    // Cách 2: Lấy offsetX, offsetY khi chúng ta không xử lý được bubble event
     const offsetX = event.pageX - (rect.x + window.scrollX)
     const offsetY = event.pageY - (rect.y + window.scrollY)
-
     const top = offsetY * (1 - naturalHeight / rect.height)
     const left = offsetX * (1 - naturalWidth / rect.width)
     image.style.width = naturalWidth + 'px'
@@ -96,33 +94,50 @@ export default function ProductDetail() {
     setBuyCount(value)
   }
 
+  const addToCartMutation = useMutation({
+    mutationFn: (body: { product_id: string; buy_count: number }) => purchaseApi.addToCart(body)
+  })
   const addToCart = () => {
     addToCartMutation.mutate(
-      { buy_count: buyCount, product_id: product?._id as string },
+      {
+        buy_count: buyCount,
+        product_id: product?._id as string
+      },
       {
         onSuccess: (data) => {
-          toast.success(data.data.message, { autoClose: 1000 })
+          toast.success(data.data.message, { autoClose: 1000, position: 'top-center' })
           queryClient.invalidateQueries({ queryKey: ['purchases', { status: purchasesStatus.inCart }] })
+          refetch()
         }
       }
     )
   }
-
-  const buyNow = async () => {
-    const res = await addToCartMutation.mutateAsync({ buy_count: buyCount, product_id: product?._id as string })
-    const purchase = res.data.data
-    navigate(path.cart, {
-      state: {
-        purchaseId: purchase._id
+  const buyNow = () => {
+    addToCartMutation.mutate(
+      {
+        buy_count: buyCount,
+        product_id: product?._id as string
+      },
+      {
+        onSuccess: (data) => {
+          toast.success(data.data.message, { autoClose: 1000 })
+          queryClient.invalidateQueries({ queryKey: ['purchases', { status: purchasesStatus.inCart }] })
+          navigate(path.cart, {
+            state: {
+              purchaseId: data.data.data._id
+            }
+          })
+          refetch()
+        }
       }
-    })
+    )
   }
 
   if (!product) return null
   return (
     <div className='bg-gray-200 py-6'>
       <Helmet>
-        <title>{product.name} | Shopee</title>
+        <title>{product.name} | Shope</title>
         <meta
           name='description'
           content={convert(product.description, {

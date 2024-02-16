@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { schema, Schema } from 'src/utils/rules'
+import { loginSchema, schema, Schema } from 'src/utils/rules'
 import { useMutation } from '@tanstack/react-query'
 import authApi from 'src/apis/auth.api'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
@@ -11,9 +11,9 @@ import { useContext } from 'react'
 import { AppContext } from 'src/contexts/app.context'
 import Button from 'src/components/Button'
 import { Helmet } from 'react-helmet-async'
+import { toast } from 'react-toastify'
 
 type FormData = Pick<Schema, 'email' | 'password'>
-const loginSchema = schema.pick(['email', 'password'])
 
 export default function Login() {
   const { setIsAuthenticated, setProfile } = useContext(AppContext)
@@ -24,7 +24,7 @@ export default function Login() {
     handleSubmit,
     formState: { errors }
   } = useForm<FormData>({
-    resolver: yupResolver(loginSchema)
+    resolver: yupResolver<FormData>(loginSchema)
   })
 
   const loginMutation = useMutation({
@@ -33,21 +33,22 @@ export default function Login() {
   const onSubmit = handleSubmit((data) => {
     loginMutation.mutate(data, {
       onSuccess: (data) => {
+        // console.log(data.data)
         setIsAuthenticated(true)
         setProfile(data.data.data.user)
-        navigate('/')
+        toast.success(`${data.data.message}`, { autoClose: 1300, position: 'top-center' })
+        navigate('/') // cho về trang chủ
       },
       onError: (error) => {
         if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
-          const formError = error.response?.data.data
-          if (formError) {
-            Object.keys(formError).forEach((key) => {
-              setError(key as keyof FormData, {
-                message: formError[key as keyof FormData],
-                type: 'Server'
-              })
+          const loginError = error.response?.data.data
+          for (let key in loginError) {
+            setError(key as keyof FormData, {
+              message: loginError[key as keyof FormData],
+              type: 'Sever'
             })
           }
+          toast.error(`${loginError?.password}`, { autoClose: 7000, position: 'top-center' })
         }
       }
     })
@@ -56,8 +57,8 @@ export default function Login() {
   return (
     <div className='bg-orange'>
       <Helmet>
-        <title>Đăng nhập | Shopee Clone</title>
-        <meta name='description' content='Đăng nhập vào dự án Shopee Clone' />
+        <title>Đăng nhập | Shope</title>
+        <meta name='description' content='Đăng nhập' />
       </Helmet>
       <div className='container'>
         <div className='grid grid-cols-1 py-12 lg:grid-cols-5 lg:py-32 lg:pr-10'>
