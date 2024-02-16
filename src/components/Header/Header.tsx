@@ -10,6 +10,7 @@ import noproduct from 'src/assets/images/no-product.png'
 
 import NavHeader from '../NavHeader'
 import useSearchProducts from 'src/hooks/useSearchProducts'
+import { generateNameId } from 'src/utils/utils'
 
 export default function Header() {
   const { isAuthenticated } = useContext(AppContext)
@@ -73,23 +74,31 @@ export default function Header() {
                       <div className='capitalize text-gray-400'>Sản phẩm mới thêm</div>
                       <div className='mt-5'>
                         {purchasesInCart.slice(0, 5).map((purchase) => (
-                          <div className='mt-2 flex py-2 hover:bg-gray-100' key={purchase._id}>
-                            <div className='flex-shrink-0'>
-                              <img
-                                src={purchase.product.image}
-                                alt={purchase.product.name}
-                                className='h-11 w-11 object-cover'
-                              />
+                          <Link
+                            to={`${path.home}${generateNameId({
+                              name: purchase.product.name,
+                              id: purchase.product._id
+                            })}`}
+                            key={purchase._id}
+                          >
+                            <div className='mt-2 flex py-2 hover:bg-gray-100'>
+                              <div className='flex-shrink-0'>
+                                <img
+                                  src={purchase.product.image}
+                                  alt={purchase.product.name}
+                                  className='h-11 w-11 object-cover'
+                                />
+                              </div>
+                              <div className='ml-2 flex-grow overflow-hidden'>
+                                <div className='truncate'>{purchase.product.name}</div>
+                              </div>
+                              <div className='ml-2 flex-shrink-0'>
+                                <span className='text-orange'>
+                                  ₫{new Intl.NumberFormat().format(purchase.product.price)}
+                                </span>
+                              </div>
                             </div>
-                            <div className='ml-2 flex-grow overflow-hidden'>
-                              <div className='truncate'>{purchase.product.name}</div>
-                            </div>
-                            <div className='ml-2 flex-shrink-0'>
-                              <span className='text-orange'>
-                                ₫{new Intl.NumberFormat().format(purchase.product.price)}
-                              </span>
-                            </div>
-                          </div>
+                          </Link>
                         ))}
                       </div>
                       <div className='mt-6 flex items-center justify-between'>
