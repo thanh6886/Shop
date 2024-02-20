@@ -108,6 +108,9 @@ export default function ProductItem() {
           toast.success(data.data.message, { autoClose: 1000, position: 'top-center' })
           queryClient.invalidateQueries({ queryKey: ['purchases', { status: purchasesStatus.inCart }] })
           refetch()
+        },
+        onError: () => {
+          navigate('/login')
         }
       }
     )
@@ -128,6 +131,9 @@ export default function ProductItem() {
             }
           })
           refetch()
+        },
+        onError: () => {
+          navigate('/login')
         }
       }
     )

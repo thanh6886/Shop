@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
 import authApi from 'src/apis/auth.api'
 import path from 'src/constants/path'
@@ -11,6 +11,7 @@ import { toast } from 'react-toastify'
 
 export default function NavHeader() {
   const { setIsAuthenticated, isAuthenticated, setProfile, profile } = useContext(AppContext)
+  // const [nameProfile, setNameProfile] = useState(true)
   const queryClient = useQueryClient()
   const logoutAccountMutation = useMutation({
     mutationFn: authApi.logout,
@@ -36,11 +37,13 @@ export default function NavHeader() {
         <Popover
           renderPopover={
             <div>
-              <img
-                src='https://down-vn.img.susercontent.com/file/a5e589e8e118e937dc660f224b9a1472'
-                alt='download_qr_code'
-                className='w-28 h-28 shadow-md'
-              />
+              <a href='https://shopee.vn/web' target='_blank' rel='noopener noreferrer'>
+                <img
+                  src='https://down-vn.img.susercontent.com/file/a5e589e8e118e937dc660f224b9a1472'
+                  alt='download_qr_code'
+                  className='w-28 h-28 shadow-md'
+                />
+              </a>
             </div>
           }
         >

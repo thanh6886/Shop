@@ -85,32 +85,31 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
       <ul>
         {categories.map((item) => {
           const isActive = category === item._id
+          const categorySearch = () => {
+            navigate({
+              pathname: path.home,
+              search: createSearchParams(omit({ ...queryConfig, category: item._id, page: '1' }, ['name'])).toString()
+            })
+          }
           return (
-            <li
-              className='py-2 pl-2 m-1 border-b border-x border-gray-500  transition-transform transform hover:scale-105 '
-              key={item._id}
+            <div
+              className={classNames('relative px-2 ', {
+                'font-semibold text-orange': isActive
+              })}
             >
-              <Link
-                to={{
-                  pathname: path.home,
-                  search: createSearchParams({
-                    ...queryConfig,
-                    category: item._id,
-                    page: '1'
-                  }).toString()
-                }}
-                className={classNames('relative px-2', {
-                  'font-semibold text-orange': isActive
-                })}
+              <li
+                className='py-2 pl-2 m-1 border-b border-x border-gray-500  transition-transform transform hover:scale-105 hover:bg-red-200'
+                key={item._id}
+                onClick={categorySearch}
               >
                 {isActive && (
-                  <svg viewBox='0 0 4 7' className='absolute top-1 left-[-10px] h-3 w-3 fill-orange'>
+                  <svg viewBox='0 0 4 7' className='absolute top-2 left-[-10px] h-3 w-3 fill-orange'>
                     <polygon points='4 3.5 0 0 0 7' />
                   </svg>
                 )}
                 {item.name}
-              </Link>
-            </li>
+              </li>
+            </div>
           )
         })}
       </ul>

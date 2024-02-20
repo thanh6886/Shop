@@ -33,27 +33,26 @@ export default function ChangePassword() {
   })
 
   const onSubmit = handleSubmit((data) => {
-    try {
-      const body = omit(data, ['confirm_password'])
-      updateProfileMutation.mutate(body, {
-        onSuccess: (mes) => {
-          toast.success(mes.data.message, { autoClose: 800 })
-          reset()
-        }
-      })
-    } catch (error) {
-      if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
-        const formError = error.response?.data.data
-        if (formError) {
+    const body = omit(data, ['confirm_password'])
+    updateProfileMutation.mutate(body, {
+      onSuccess: (mes) => {
+        toast.success(mes.data.message, { autoClose: 800 })
+        reset()
+      },
+
+      onError: (error) => {
+        if (isAxiosUnprocessableEntityError<ErrorResponse<FormData>>(error)) {
+          const formError = error.response?.data.data
           for (const key in formError) {
             setError(key as keyof FormData, {
               message: formError[key as keyof FormData],
               type: 'Sever'
             })
           }
+          toast.error(`${formError?.password}`, { autoClose: 7000, position: 'top-center' })
         }
       }
-    }
+    })
   })
 
   return (
