@@ -93,13 +93,13 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
           }
           return (
             <div
+              key={item._id}
               className={classNames('relative px-2 ', {
                 'font-semibold text-orange': isActive
               })}
             >
               <li
                 className='py-2 pl-2 m-1 border-b border-x border-gray-500  transition-transform transform hover:scale-105 hover:bg-red-200'
-                key={item._id}
                 onClick={categorySearch}
               >
                 {isActive && (

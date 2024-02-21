@@ -121,7 +121,7 @@ export default function NavHeader() {
                 className='h-full w-full rounded-full object-cover'
               />
             </div>
-            <div>{profile?.name}</div>
+            <div>{profile?.name || profile?.email}</div>
           </Popover>
         )}
         {!isAuthenticated && (
