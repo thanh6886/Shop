@@ -31,7 +31,7 @@ export default function ProductList() {
   return (
     <div className='bg-gray-200 py-6'>
       <Helmet>
-        <title>Trang chủ | Shope</title>
+        <title>Trang chủ | Shop</title>
         <meta name='description' content='Trang chủ' />
       </Helmet>
       <div className='container'>
