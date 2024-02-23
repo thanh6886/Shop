@@ -44,6 +44,7 @@ export default function Header() {
                 type='text'
                 className='flex-grow border-none bg-transparent px-3 py-2 text-black outline-none'
                 placeholder='Free Ship Đơn Từ 0Đ'
+                // autoComplete='off'
                 {...register('name')}
               />
               <button className='flex-shrink-0 rounded-sm bg-orange py-2 px-6 hover:opacity-90'>
