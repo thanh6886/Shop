@@ -1,1 +1,0 @@
-import{h as r}from"./index-187f8b77.js";const e={getProfile(){return r.get("me")},updateProfile(t){return r.put("user",t)},uploadAvatar(t){return r.post("user/upload-avatar",t,{headers:{"Content-Type":"multipart/form-data"}})}},u=e;export{u};
