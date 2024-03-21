@@ -112,7 +112,6 @@ export default function Profile() {
   const handleChangeFile = (file?: File) => {
     setFile(file)
   }
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileFromLocal = event.target.files?.[0]
@@ -125,6 +124,8 @@ export default function Profile() {
       handleChangeFile(fileFromLocal)
     }
   }
+
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const handleUpload = () => {
     fileInputRef.current?.click()
   }
