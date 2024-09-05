@@ -41,7 +41,7 @@ export default function NavHeader() {
                 <img
                   src='https://down-vn.img.susercontent.com/file/a5e589e8e118e937dc660f224b9a1472'
                   alt='download_qr_code'
-                  className='w-28 h-28 shadow-md'
+                  className='w-28 h-28 shadow-md '
                 />
               </a>
             </div>

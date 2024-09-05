@@ -4,7 +4,7 @@ export default function RegisterHeader() {
   const registerMatch = useMatch('/register')
   const isRegister = Boolean(registerMatch)
   return (
-    <header className='py-5 bg-slate-100'>
+    <header className='py-5 bg-slate-100 sticky top-0 z-20'>
       <div className='container'>
         <nav className='flex  justify-between '>
           <div className='flex justify-center'>

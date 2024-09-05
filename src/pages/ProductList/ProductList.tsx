@@ -8,8 +8,21 @@ import { ProductListConfig } from 'src/types/product.type'
 import AsideFilter from './components/AsideFilter'
 import Product from './components/Product/Product'
 import SortProductList from './components/SortProductList'
+import Carousel from 'src/components/Carousel/Carousel'
 
 export default function ProductList() {
+  const slides = [
+    'https://cf.shopee.vn/file/sg-11134258-7rdyw-lzr4k99mb0o86f_xxhdpi',
+    'https://cf.shopee.vn/file/sg-11134258-7rdwo-lzk693fv4v2y33_xxhdpi',
+    'https://cf.shopee.vn/file/sg-11134258-7rdw7-lzr4ka8aw9ro97_xxhdpi',
+    'https://cf.shopee.vn/file/sg-11134258-7rdy6-lzkgf6k13f4y73_xxhdpi',
+    'https://cf.shopee.vn/file/sg-11134258-7rdvy-lzkggoe49uzwc8_xxhdpi',
+    'https://cf.shopee.vn/file/sg-11134258-7rdys-lzk6yrxg9ahmbf_xxhdpi',
+    'https://cf.shopee.vn/file/vn-11134258-7r98o-lzkfryt62i753b_xxhdpi',
+    'https://cf.shopee.vn/file/sg-11134258-7rdyf-lzkg2c31v6kn03_xxhdpi',
+    'https://cf.shopee.vn/file/sg-11134258-7rdvv-lzk5egosu89m00_xxhdpi',
+    'https://cf.shopee.vn/file/sg-11134258-7rdvv-lzk5egosu89m00_xxhdpi'
+  ]
   const queryConfig = useQueryConfig()
 
   const { data: productsData } = useQuery({
@@ -29,11 +42,22 @@ export default function ProductList() {
   })
 
   return (
-    <div className='bg-gray-200 py-6'>
+    <div className='bg-gray-200'>
       <Helmet>
         <title>Trang chủ | Shop</title>
         <meta name='description' content='Trang chủ' />
       </Helmet>
+      <div className='pl-3  pt-1 pb-5 grid grid-cols-11 '>
+        <div className='col-span-6 col-start-2'>
+          <Carousel slides={slides} />
+        </div>
+
+        <div className='col-span-4 w-[74%] ml-2'>
+          <img src='https://cf.shopee.vn/file/sg-11134258-7rdwx-lzk759r61kree2_xhdpi' className='mb-1' />
+          <img src='https://cf.shopee.vn/file/sg-11134258-7rdyw-lzkg2eg8d4hz8c_xhdpi' />
+        </div>
+      </div>
+
       <div className='container'>
         {productsData && (
           <div className='grid grid-cols-12 gap-6'>
