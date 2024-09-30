@@ -1,12 +1,12 @@
 import classNames from 'classnames'
-import { useContext } from 'react'
+import { useSelector } from 'react-redux'
 import { Link, NavLink } from 'react-router-dom'
 import path from 'src/constants/path'
-import { AppContext } from 'src/contexts/app.context'
+import { IRootState } from 'src/redux/store'
 import { getAvatarUrl } from 'src/utils/utils'
 
 export default function UserSideNav() {
-  const { profile } = useContext(AppContext)
+  const profile = useSelector((state: IRootState) => state.redux.profile)
 
   return (
     <div>

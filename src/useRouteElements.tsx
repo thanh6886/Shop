@@ -1,11 +1,12 @@
 import path from 'src/constants/path'
-import { useContext, lazy, Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 import { Navigate, Outlet, useRoutes } from 'react-router-dom'
-import { AppContext } from './contexts/app.context'
 import MainLayout from './layouts/MainLayout'
 import RegisterLayout from './layouts/RegisterLayout'
 import CartLayout from './layouts/CartLayout'
 import UserLayout from './pages/User/layouts/UserLayout'
+import { useSelector } from 'react-redux'
+import { IRootState } from './redux/store'
 
 // lazyload
 const Login = lazy(() => import('./pages/Login'))
@@ -20,13 +21,12 @@ const HistoryPurchase = lazy(() => import('./pages/User/pages/HistoryPurchase'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
 function ProtectedRoute() {
-  const { isAuthenticated } = useContext(AppContext)
+  const isAuthenticated = useSelector((state: IRootState) => state.redux.isAuthenticated)
   return isAuthenticated ? <Outlet /> : <Navigate to='/login' /> // login rồi mới cho truy cập cart
 }
 
 function RejectedRoute() {
-  const { isAuthenticated } = useContext(AppContext)
-
+  const isAuthenticated = useSelector((state: IRootState) => state.redux.isAuthenticated)
   return !isAuthenticated ? <Outlet /> : <Navigate to='/' /> // login rồi không render login && register
 }
 

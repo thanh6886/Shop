@@ -1,19 +1,21 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { Fragment, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { useForm, Controller, FormProvider, useFormContext } from 'react-hook-form'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useForm, Controller } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import userApi, { BodyUpdateProfile } from 'src/apis/user.api'
 import Button from 'src/components/Button'
 import Input from 'src/components/Input'
 
 import InputNumber from 'src/components/InputNumber'
-import { AppContext } from 'src/contexts/app.context'
+
 import { ErrorResponse } from 'src/types/utils.type'
 import { setProfileToLS } from 'src/utils/auth'
 import { profileSchema, userSchema, UserSchema } from 'src/utils/rules'
 import { getAvatarUrl, isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import DateSelect from '../../components/DateSelect'
+import { useDispatch } from 'react-redux'
+import { setProfile } from 'src/redux/redux'
 
 type FormData = Pick<UserSchema, 'name' | 'address' | 'phone' | 'date_of_birth' | 'avatar'>
 type FormDataError = Omit<FormData, 'date_of_birth'> & {
@@ -21,7 +23,7 @@ type FormDataError = Omit<FormData, 'date_of_birth'> & {
 }
 
 export default function Profile() {
-  const { setProfile } = useContext(AppContext)
+  const dispatch = useDispatch()
   const [file, setFile] = useState<File>()
 
   const previewImage = useMemo(() => {
@@ -89,7 +91,7 @@ export default function Profile() {
         date_of_birth: data.date_of_birth?.toISOString(),
         avatar: avatarName
       })
-      setProfile(res.data.data)
+      dispatch(setProfile(res.data.data))
       setProfileToLS(res.data.data)
       // refetch()
       toast.success('cập nhật thông tin thành công', { autoClose: 600 })

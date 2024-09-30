@@ -99,7 +99,7 @@ export default function AsideFilter({ queryConfig, categories }: Props) {
               })}
             >
               <li
-                className='py-2 pl-2 m-1 border-b border-x border-gray-500  transition-transform transform hover:scale-105 hover:bg-red-200'
+                className='py-2 pl-2 m-1 border-b border-x border-gray-500  transition-transform transform hover:scale-105 hover:bg-slate-100'
                 onClick={categorySearch}
               >
                 {isActive && (

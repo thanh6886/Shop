@@ -1,32 +1,44 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import React, { useContext, useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import purchaseApi from 'src/apis/purchase.api'
 import Button from 'src/components/Button'
 import QuantityController from 'src/components/QuantityController'
 import path from 'src/constants/path'
 import { purchasesStatus } from 'src/constants/purchase'
-import { Purchase } from 'src/types/purchase.type'
+import { ExtendedPurchase, Purchase } from 'src/types/purchase.type'
 import { generateNameId } from 'src/utils/utils'
 import { produce } from 'immer'
 import keyBy from 'lodash/keyBy'
 import { toast } from 'react-toastify'
-import { AppContext } from 'src/contexts/app.context'
 import noproduct from 'src/assets/images/no-product.png'
+import { useDispatch, useSelector } from 'react-redux'
+import { IRootState } from 'src/redux/store'
+import { setExtendedPurchases } from 'src/redux/redux'
+import { isEqual } from 'lodash'
 
 export default function Cart() {
-  const { extendedPurchases, setExtendedPurchases } = useContext(AppContext)
+  const dispatch = useDispatch()
+  const location = useLocation()
+  const extendedPurchases = useSelector((state: IRootState) => state.redux.extendedPurchases)
+
   const { data: purchasesInCartData, refetch } = useQuery({
     queryKey: ['purchases', { status: purchasesStatus.inCart }],
     queryFn: () => purchaseApi.getPurchases({ status: purchasesStatus.inCart })
   })
-  // console.log(purchasesInCartData)
+  const choosenPurchaseIdFromLocation = (location.state as { purchaseId: string } | null)?.purchaseId
+  const purchasesInCart = purchasesInCartData?.data.data
+  const isAllChecked = useMemo(() => extendedPurchases.every((purchase) => purchase.checked), [extendedPurchases])
+  const checkedPurchases = useMemo(() => extendedPurchases.filter((purchase) => purchase.checked), [extendedPurchases])
+  const checkedPurchasesCount = checkedPurchases.length
+
   const updatePurchaseMutation = useMutation({
     mutationFn: (body: { product_id: string; buy_count: number }) => purchaseApi.updatePurchase(body),
     onSuccess: () => {
       refetch()
     }
   })
+
   const buyProductsMutation = useMutation({
     mutationFn: (body: { product_id: string; buy_count: number }[]) => purchaseApi.buyProducts(body),
     onSuccess: (data) => {
@@ -36,18 +48,13 @@ export default function Cart() {
       })
     }
   })
+
   const deletePurchasesMutation = useMutation({
     mutationFn: (purchaseIds: string[]) => purchaseApi.deletePurchase(purchaseIds),
     onSuccess: () => {
       refetch()
     }
   })
-  const location = useLocation()
-  const choosenPurchaseIdFromLocation = (location.state as { purchaseId: string } | null)?.purchaseId
-  const purchasesInCart = purchasesInCartData?.data.data
-  const isAllChecked = useMemo(() => extendedPurchases.every((purchase) => purchase.checked), [extendedPurchases])
-  const checkedPurchases = useMemo(() => extendedPurchases.filter((purchase) => purchase.checked), [extendedPurchases])
-  const checkedPurchasesCount = checkedPurchases.length
 
   // tính tổng giá tiền
   const totalCheckedPurchasePrice = useMemo(
@@ -66,20 +73,20 @@ export default function Cart() {
   )
 
   useEffect(() => {
-    setExtendedPurchases((prev) => {
-      const extendedPurchasesObject = keyBy(prev, '_id')
-      return (
-        purchasesInCart?.map((purchase) => {
-          const isChoosenPurchaseFromLocation = choosenPurchaseIdFromLocation === purchase._id
-          return {
-            ...purchase,
-            disabled: false,
-            checked: isChoosenPurchaseFromLocation || Boolean(extendedPurchasesObject[purchase._id]?.checked)
-          }
-        }) || []
-      )
-    })
-  }, [purchasesInCart, choosenPurchaseIdFromLocation])
+    const extendedPurchasesObject = keyBy(extendedPurchases, '_id')
+    const newExtendedPurchases =
+      purchasesInCart?.map((purchase) => {
+        const isChoosenPurchaseFromLocation = choosenPurchaseIdFromLocation === purchase._id
+        return {
+          ...purchase,
+          disabled: false,
+          checked: isChoosenPurchaseFromLocation || Boolean(extendedPurchasesObject[purchase._id]?.checked)
+        }
+      }) || []
+    if (!isEqual(newExtendedPurchases, extendedPurchases)) {
+      dispatch(setExtendedPurchases(newExtendedPurchases))
+    }
+  }, [purchasesInCart, choosenPurchaseIdFromLocation, extendedPurchases, dispatch])
 
   useEffect(() => {
     return () => {
@@ -89,39 +96,35 @@ export default function Cart() {
 
   //check
   const handleCheck = (Index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setExtendedPurchases(
-      produce((draft) => {
-        draft[Index].checked = event.target.checked
-      })
-    )
+    let updatedPurchases: ExtendedPurchase[] = produce(extendedPurchases, (draft) => {
+      draft[Index].checked = event.target.checked
+    })
+    dispatch(setExtendedPurchases(updatedPurchases))
   }
 
   const handleCheckAll = () => {
-    setExtendedPurchases((prev) => {
-      // console.log(prev)
-      return prev.map((purchase) => ({
-        ...purchase,
-        checked: !isAllChecked
-      }))
-    })
+    const updatedPurchases: ExtendedPurchase[] = extendedPurchases.map((purchase) => ({
+      ...purchase,
+      checked: !isAllChecked
+    }))
+
+    dispatch(setExtendedPurchases(updatedPurchases))
   }
   // input Quantity Control
   const handleTypeQuantity = (Index: number) => (value: number) => {
-    setExtendedPurchases(
-      produce((draft) => {
-        draft[Index].buy_count = value
-      })
-    )
+    let updatedPurchases: ExtendedPurchase[] = produce(extendedPurchases, (draft) => {
+      draft[Index].buy_count = value
+    })
+    dispatch(setExtendedPurchases(updatedPurchases))
   }
 
   const handleQuantity = (Index: number, value: number, enable: boolean) => {
     if (enable) {
       const purchase = extendedPurchases[Index]
-      setExtendedPurchases(
-        produce((draft) => {
-          draft[Index].disabled = true
-        })
-      )
+      let updatedPurchases: ExtendedPurchase[] = produce(extendedPurchases, (draft) => {
+        draft[Index].disabled = true
+      })
+      dispatch(setExtendedPurchases(updatedPurchases))
       updatePurchaseMutation.mutate({ product_id: purchase.product._id, buy_count: value })
     }
   }

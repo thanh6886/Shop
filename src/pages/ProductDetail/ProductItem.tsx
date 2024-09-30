@@ -36,7 +36,6 @@ export default function ProductItem() {
     () => (product ? product.images.slice(...currentIndexImages) : []),
     [product, currentIndexImages]
   )
-  //
 
   const queryConfig: ProductListConfig = { limit: '15', page: '1', category: product?.category._id }
 

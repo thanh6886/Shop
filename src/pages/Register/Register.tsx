@@ -10,16 +10,16 @@ import Input from 'src/components/Input'
 import authApi from 'src/apis/auth.api'
 import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
 import { ErrorResponse } from 'src/types/utils.type'
-import { useContext } from 'react'
-import { AppContext } from 'src/contexts/app.context'
 import Button from 'src/components/Button'
 import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-toastify'
+import { useDispatch } from 'react-redux'
+import { setIsAuthenticated, setProfile } from 'src/redux/redux'
 
 type FormData = Pick<Schema, 'email' | 'password' | 'confirm_password'>
 
 export default function Register() {
-  const { setIsAuthenticated, setProfile } = useContext(AppContext)
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const {
     register,
@@ -37,8 +37,8 @@ export default function Register() {
     registerAccountMutation.mutate(body, {
       onSuccess: (data) => {
         // console.log(data.data)
-        setIsAuthenticated(true)
-        setProfile(data.data.data.user)
+        dispatch(setIsAuthenticated(true))
+        dispatch(setProfile(data.data.data.user))
         navigate('/')
       },
       onError: (error) => {

@@ -1,8 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import path from 'src/constants/path'
-import { AppContext } from 'src/contexts/app.context'
 import Popover from '../Popover'
 import { purchasesStatus } from 'src/constants/purchase'
 import purchaseApi from 'src/apis/purchase.api'
@@ -11,9 +9,11 @@ import noproduct from 'src/assets/images/no-product.png'
 import NavHeader from '../NavHeader'
 import useSearchProducts from 'src/hooks/useSearchProducts'
 import { generateNameId } from 'src/utils/utils'
+import { useSelector } from 'react-redux'
+import { IRootState } from 'src/redux/store'
 
 export default function Header() {
-  const { isAuthenticated } = useContext(AppContext)
+  const isAuthenticated = useSelector((state: IRootState) => state.redux.isAuthenticated)
   const { handleSearch, register } = useSearchProducts()
 
   const { data: purchasesInCartData } = useQuery({

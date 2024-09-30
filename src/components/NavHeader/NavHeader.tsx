@@ -1,23 +1,32 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import authApi from 'src/apis/auth.api'
 import path from 'src/constants/path'
 import { purchasesStatus } from 'src/constants/purchase'
-import { AppContext } from 'src/contexts/app.context'
 import { getAvatarUrl } from 'src/utils/utils'
 import Popover from '../Popover'
 import { toast } from 'react-toastify'
+import { useDispatch, useSelector } from 'react-redux'
+import { IRootState } from 'src/redux/store'
+import { setIsAuthenticated, setProfile } from 'src/redux/redux'
 
 export default function NavHeader() {
-  const { setIsAuthenticated, isAuthenticated, setProfile, profile } = useContext(AppContext)
-  // const [nameProfile, setNameProfile] = useState(true)
+  const dispatch = useDispatch()
+
   const queryClient = useQueryClient()
+
+  const { isAuthenticated, profile, extendedPurchases } = useSelector((state: IRootState) => ({
+    isAuthenticated: state.redux.isAuthenticated,
+    profile: state.redux.profile,
+    extendedPurchases: state.redux.extendedPurchases
+  }))
+
   const logoutAccountMutation = useMutation({
     mutationFn: authApi.logout,
     onSuccess: () => {
-      setIsAuthenticated(false)
-      setProfile(null)
+      dispatch(setIsAuthenticated(false))
+      dispatch(setProfile(null))
       queryClient.removeQueries({ queryKey: ['purchases', { status: purchasesStatus.inCart }] })
       toast.success('đăng xuất thành công', { autoClose: 1000 })
     }
